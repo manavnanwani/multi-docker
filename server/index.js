@@ -1,15 +1,14 @@
 const keys = require("./keys");
 
-// Express App Setup
 const express = require("express");
-const bodyParser = require("body-parser");
 const cors = require("cors");
+const bodyParser = require("body-parser");
 
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
-// Postgres Client Setup
+//
 const { Pool } = require("pg");
 const pgClient = new Pool({
   user: keys.pgUser,
@@ -25,24 +24,24 @@ pgClient.on("connect", (client) => {
     .catch((err) => console.error(err));
 });
 
-// Redis Client Setup
+//
 const redis = require("redis");
 const redisClient = redis.createClient({
   host: keys.redisHost,
   port: keys.redisPort,
   retry_strategy: () => 1000,
 });
+
 const redisPublisher = redisClient.duplicate();
 
-// Express route handlers
-
+//
 app.get("/", (req, res) => {
-  res.send("Hi");
+  res.send("Hola!!");
 });
 
 app.get("/values/all", async (req, res) => {
+  console.log("server");
   const values = await pgClient.query("SELECT * from values");
-
   res.send(values.rows);
 });
 
